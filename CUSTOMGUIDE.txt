@@ -1,0 +1,249 @@
+Hello guys. Here I will be providing instructions for the creation of a server, installation of RaberryJuice (Minecraft Pi plugin), and installation of a Python to Javascript plugin, called JSPyBridge to utilize the Mineflex API. If you'd prefer to use Minecraft version 1.12 and the Python develpment interface IDLE, then professor Wang's instructions are sufficient. Let me know if you need help with anything in regards to that. 
+
+If instead, you are like me and would prefer to use a different IDE for programming (I prefer IntellijIDEA, primarily used for Java development) or would like to use a more recent minecraft version, these should be sufficient instructions to follow for both AdventuresInMinecraft and Mineflayer. I haven't tested all of the code in AdventuresInMinecraft nor have I tested all of the code with Mineflayer, however they do seem to be working correctly so far. 
+
+This guide will assume that you are using IntellijIDEA as your preferred IDE. IntellijIDEA is designed primaily for Java development. Fortunately, there exists a Python Community edition plugin for IntellijIDEA. If you are unfamiliar with plugins, you can think of them as additional 3rd-party content added to a software for additional features or convinience; they contain pre-written programs and libraries for your utilization.
+
+
+INSTALLING PYTHON PLUGIN FOR INTELLIJ --
+
+	1. Download the Python Language form the following link: https://www.python.org/
+		***You will need Python 3.8 or newer for a later plugin to work!!!***
+			(I am using Python 3.11.3, the latest version of Python)
+	2. After Python is downloaded on your browser, run the file and navigate through the installation wizard until the process is complete.
+	3. Now that Python is installed, open IntelliJ. Navigate to the settings button in IntelliJ and click Plugins in the drop-down menu. Or click Plugins on the main menu.
+	3. Under the Marketplace tab, search for "Python" and install Python Community Edition
+		
+		This allows IntelliJ to interpret and highlight Python files, ending in .py
+		
+		To test the plugin, you can create a new Project in IntelliJ with the New Project button in the top-right of the main menu. 
+
+		Call it whatever you'd like. By default, this will be saved as a file under the path user>IdeaProjects
+
+		If you have the Python Plugin correctly installed and the language installed, then you should be able 		to select Python as the language for the project.
+		I set the Environment Type to VirtualEnv. The others may be preferable, however I am not very 			      experienced with Python at the time of writing this. 
+		Make sure the Base Interpreter is set to the version of Python you just installed!
+		
+		Once your project is created, you'll see the file structure of your project on the left hand side. 
+		Right click the name of your project and select New > Python File
+		In the program editor, type print("Hello World")  . Click the triangle button in the top right to run your program. 
+		If the terminal window below displays the text "Hello World" then you have succesfully created your first Python program!
+		*It's possible that your program may be saved under the path user>IdeaProjects>ProjectName>venv>ProgramName, this just means that they are in the virtual environment folder and are just as accessible.*
+
+Now that Python is correctly installed, and the Plugin in implemented into IntelliJ, you're ready to create your own local minecraft server.
+
+The starter kit can be obtained at the following link, if you wish to run a 1.12 Minecraft Server. 
+https://github.com/AdventuresInMinecraft/AdventuresInMinecraft-PC
+We will use this starter kit later as a backup if our custom starter kit causes issues.
+
+Unfortunately, Mineflayer does not yet support the most recent version of Minecraft 1.19.4 due to issues with its one of its libraries, however it is being worked on by its community and will likely be complete soon. This will be discussed in better detail later, but for now if you wish to use the most updated, viable version of Minecraft, you will have to settle for version 1.19.3 . 
+
+IMPORTANT:
+****It is neccessary to create the following files:
+Create a new folder in a safe place on your computer, call it something relevant to the project.
+
+*I would suggest NOT naming it "AdventuresInMinecraft" as later you will download a backup folder with that exact name.*
+
+Within that folder, create two new folders: One titled "MyAdventures" and another titled "Server". 
+If you are using IDLE to code, you will save your program files directly to the "MyAdventures" folder, as detailed in the AdventuresInMinecraftBook.
+	
+
+SERVER INITIALIZATION --
+
+It follows that the next segment will detail the creation of a local 1.19.3 Minecraft server. This local server will be the environment in which we will interact with the game through Mineflayer and Python scripts. You'll be able to run and stop the server from your Operating System's terminal (for example, on Windows this is the Command Prompt window).
+
+	1. First, you will need BuildTools. Instructions for installation are found at the following link:  https://www.spigotmc.org/wiki/buildtools/#windows
+
+		Following instructions are more detailed on the webstite above; I will provide a generalization for Windows users.
+
+		Assuming you're on Windows, you will need Git Bash and a sufficient version of Java as detailed in the above website. 
+
+		Once Git Bash and Java are installed for your operating system, you can download the BuildTools.jar file from 	https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar
+		*.jar files are just package files written in Java, containing neccesary Java class files, data, and resources for a particular purpose* 
+
+		Navigate to wherever the BuildTools.jar file was downloaded (It is most likely in your downloads folder). 
+		Right-click the blank space in the file explorer in the directory in which BuildTools.jar is saved (most likely in Downloads), 
+	and select *Show More Options>Git Bash Here*.
+
+		This will open a Git window in the desired directory. If you're using Windows, enter the command: java -jar BuildTools.jar --rev 1.19.3 into the terminal.
+		
+		Be not afraid. The Git window will appear to go haywire; it is simply downloading the necessary files to compile your 1.19.3 server jar file!
+		It may take a few minutes... simply let it run.
+
+		Once complete, you should now have a new .jar file titled "spigot-1.19.3" .
+
+		***Now, move the spigot-1.19.3 file to the folder you created earlier called "Server". Make sure that 		the BuildTools.jar file is NOT in the same directory as the Spigot jar file***
+
+	2. Now follow the instructions on the followign website https://www.spigotmc.org/wiki/spigot-installation/
+
+		Again, I will provide a generalization of the instructions for Windows users.
+		Create a new text file using an application of your choice (NotePad is sufficient).
+		Copy the following text into your text file:
+			
+			@echo off
+			java -Xms#G -Xmx#G -XX:+UseG1GC -jar spigot-1.19.3.jar nogui
+			pause
+		
+		*Replace the hash signs with the number of Gigabytes allocated by your storage for your server. Based on my experience playing minecraft, I would suggest 3 Gigs*
+		*If you intend to have a different version of Minecraft required by your server, simply change it to spigot-#.##.#.jar where # is the desired version.*
+		***The spigot-#.#.#.jar text should match the spigot-#.#.#.jar file from earlier!!!***
+		
+		Save this text file as "start.bat" and save it to the "Server" folder from earlier. The Server folder should containt both "start" AND "spigot-1.19.3"
+		
+		start is now a Windows batch file, which contains a series of commands executed by Windows command-line interpretter (Command Terminal)
+
+	3. Double-click the start.bat file. This will open your Windows Terminal and run some commands. It will download some new files to your Server file.
+		
+		the properties file titled "server.properties" holds the data dictating properties of your server. For example, if you wish to create your server in hardcore mode 			(which I would not recommend), find the hardcore line and set "hardcore=false" to "hardcore=true". Similarly you can mess with other server properties, 				discussed in greater detail on the link https://minecraft.fandom.com/wiki/Server.properties
+
+		***To proceed, find the text file titled "eula" or "Eula" and open in a text application such as Notepad. Then change eula from false to true and save. This is 				just you agreeing to Mojang's legal policies.***
+		
+		Now create another text file in Notepad. Copy and paste the following text into the text file:
+
+			ECHO OFF
+			ECHO "Adventures In Minecraft"
+			ECHO "Minecraft Server Version is #.#.#"
+			ECHO "  Note - make sure Minecraft is using version #.#.#"
+			ECHO "By continuing you are indicating your agreement to our EULA https://account.mojang.com/documents/minecraft_eula)."
+			pause
+			cd Server
+			start.bat
+			pause
+			ECHO ON
+		
+		*Alter the hashes to match the version of Minecraft you're using*
+
+		Save the file as "StartServer.bat" and save it to the AdventuresInMinecraft file (or whatever you called it); NOT IN THE MyAdventures FILE!!!
+
+		***Now your folder should contain the following three files: "MyAdventures", "Server", and 			      "StartServer.bat" .***
+
+		You can now start your server by double clicking the StartServer file or executing the StartServer file 	      from the Windows Terminal!
+		
+		You can stop the server by typing "stop" into the Windows Terminal and hitting enter.
+
+	4. After agreeing to Eula, double click the start. This will install some more files and I believe it should start your server for the first time.
+
+		Stop the server by typing "stop" into the Windows Terminal and hitting enter.  
+
+		Now create another text file in Notepad. Copy and paste the following text into the text file:
+
+			ECHO OFF
+			ECHO "Adventures In Minecraft"
+			ECHO "Minecraft Server Version is #.#.#"
+			ECHO "  Note - make sure Minecraft is using version #.#.#"
+			ECHO "By continuing you are indicating your agreement to our EULA https://account.mojang.com/documents/minecraft_eula)."
+			pause
+			cd Server
+			start.bat
+			pause
+			ECHO ON
+		
+		*Alter the hashes to match the version of Minecraft you're using*
+
+		Save the file as "StartServer.bat" and save it to the AdventuresInMinecraft file (or whatever you called it); NOT IN THE MyAdventures FILE!!!
+
+		***Now your file should contain file should contain the following three files: "MyAdventures", "Server", and "StartServer.bat" .***
+
+		You can now start your server by double clicking the StartServer file or executing the StartServer file from the Windows Terminal!
+		
+		You can stop the server by typing "stop" into the Windows Terminal and hitting enter.
+
+		To test it, open the Minecraft launcher and begin the game in the desired version. You can do this by going to the Installations tab and installing Minecraft in 			the desired version; I will be using 1.19.3 . You can name this installation whatever you'd like, just make sure it is the correct version. Leave all the other 			settings as default. It is finished installing, select this installation with the drop-down menu left of the play button, select play to launch it.
+
+		Once the game has loaded, click on multiplayer and select direct connect. This will connect you to a server; type "localhost" as the server address.
+		If all of the instructions have been followed correctly, you should be able to play in your new server!
+
+
+RASBERY-JUICE INSTALLATION --
+
+Now, we will install a Plugin called RasberryJuice. RasberryJuice is a plugin for minecraft Spigot/Bukkit servers that allows one to write programs to alter the Minecraft world in the server as you are playing on it. It is based on the API built or Minecraft Pi edition for the Rasberry Pi. A Rasberry Pi is a small computer used for programming; API stands for Application Programming Interface, generally APIs communicate information between different softwares. RasberryJuice will play a role in executing Python scripts in the server.
+
+Install RasberyJuice from  https://www.spigotmc.org/resources/raspberryjuice.22724/  by clicking the download button on the top right.
+
+Once installed, move the RasberryJuice jar to the Plugins folder located within the Server folder. 
+
+While in the Plugins fodler, create a new folder called "RasberyJuice"
+
+Create a new text file and copy and paste the following text into it:
+
+	# default config.yml
+	port: 4711
+
+	# Determine whether locations are RELATIVE to the spawn point (default like pi) or ABSOLUTE
+	location: ABSOLUTE
+
+	# Determine whether hit events are triggered by LEFT clicks, RIGHT clicks or BOTH
+	hitclick: BOTH
+
+Name this file "config.yml" and save it to the "RasberryJuice" folder you just created (NOT THE JAR FILE YOU DOWNLOADED).
+
+The Plugins folder should contain a folder called "RasberryJuice" that contains the text file you just created, AND the Plugins folder should contain the RasberryJuice jar file. Depending on the version of Minecraft you intend to use (and the version of the Spigot jar file that was created earlier), you may have a folder titled "PluginMetrics". Don't worry about that folder, just leave it as is. 
+
+Now go to the following link https://github.com/AdventuresInMinecraft/AdventuresInMinecraft-PC
+
+Click the Code button on the top right and select download zip. 
+
+This will serve as your backup in case this custom setup doesnt work as intended.
+
+For now, there are files that we need from this compressed zip folder so that our Python code will alter the Minecraft world
+
+Open another window in the file explorer and open the AdventuresInMinecraft.zip (should be in your downloads folder) and navigate until you find a file titled "MyAdventures"
+
+Open the "MyAdventures" file. You should see "anyio", "mcpi", "microbit", "bitio.hex", and "findPort". 
+
+Highlight these 5 files, and ***COPY*** them. Then paste these files into your *custom MyAdventures* folder opened in the other File Explorer window. 
+
+By copying these files, this ensures that BOTH your custom setup and the backup build for Minecraft 1.12 suggested by the book have the "anyio", "mcpi", "microbit", "bitio.hex", and "findPort" files in their respective MyAdvendures folders. These files are neccessary to communicate data between your development environment and the Minecraft server.
+
+Now your MyAdventures folder and Server folder are ready for our Python programs!
+
+
+PROGRAMMING PART 1: ALTERING YOUR MINECRAFT SERVER'S WORLD WITH PYTHON --
+
+If you're using IDLE as your Python development software, then you will save your program files *IN the MyAdventures folder* and run them from the IDLE shell/terminal. By saving your program files in the MyAdventures folder, your programs will be able to access the libraries and pre-written programs installed in the MyAdventures folder, which are required to change the virtual world running on the Minecraft server. Your programs an be run from the IDLE shell.
+
+If you're using IntellijIDEA with the Python plugin, then your program files will be saved by default under the path users>user>IdeaProjects>ProjectName>ProgramName OR users>user>IdeaProjects>ProjectName>venv>ProgramName.
+To run programs from the IntelliJ window, program files SHOULD be saved in the IdeaProjects folder. 
+
+Given that the location of your programs in IntelliJ are do not have access to the files in the MyAdventures folder, we must add the MyAdventures folder to our project's content root. This will give our programs access to those files in the MyAdventures folder.
+
+If you haven't already, open IntelliJ and create a new project with a relevent name. Set the language to Python and the environment to Virtual Environment. Make sure that the Base Interpreter is the version of Python that you installed earlier. For Mineflayer to work, your Python version should be at least Python 3.8 (this will be discussed later). 
+
+Once you create you IntelliJ project, it should automatically open a window in which you can design and write programs. Before you write anything, navigate to the file tab in the top-right of the window and select the File tab. Then navigate to File > ProjectStructure > Modules > Sources and select "Add Content Root" on the right. 
+Then find the desired MyAdventures folder in your computer's directory, select it (don't open the folder), and click "OK". Once added, click "Apply" in the ProjectStructure window and then select "OK" or close the window. 
+
+Now on the left of the IntelliJ window, you should see the MyAdventures file added to your Project as a module. You can now access the files from the MyAdventures folder in your IntelliJ project when programming!
+
+Now we'll run a basic test. Create a new Python program in your project. You can create one by right-clicking the module named after your project and selecting New > Python File. Give the file a name, and in the code editor copy and paste the following text:
+
+	import mcpi.minecraft as minecraftstop
+	mc = minecraftstop.Minecraft.create()
+	mc.postToChat("Hello Minecraft World")
+
+Now, open the File Explorer if it isn't already opened, and find the File you created earlier that contains MyAdventures and Server. Double-click the StartServer windows batch file or execute it from the Windows Command Terminal by changing your directory to start your server. Once started, open the Minecraft launcher and run the desired version of Minecraft. Select multiplayer in the games main menu and then select "direct connect". Enter "localhost" as the server address to connect to your server.
+
+Once connected to you server in Minecraft, run your program with the code you just copied from the IntelliJ window.
+In the Minecraft server, you should see the text "Hello Minecraft World" in the game chat. 
+
+From the Windows Terminal, you should be able to see that you've joined the server using your Minecraft account, and you should also see that the server has displayed the text "Hello Minecraft World" to the chat. 
+
+It follows that in the Server file, there probably exists a file titled "logs". In this file, you can see a record of the last time the server was run and everything that occured. Previous server initializations appear to be encrypted. You may find the logs file handy in the future. 
+
+We're about 3/4 of the way through this guide! To summarize, so far we've covered: installing the Python Language and its libraries, the Python Plugin for IntelliJ, creating IntelliJ projects, running IntelliJ programs, the general organizational structure of our AdventuresInMinecraft folder (which for a custom starter kit should have a different name), intstalling Git Bash, installing Oracle's Java language, installing and running BuildTools with Git Bash to create a Spigot jar file, the creation and initialzation of a local Minecraft server with Spigot, installing RasberryJuice plugin for our server, and installing other necessary libraries for this project. 
+
+So far, we have to tools to alter our Minecraft worlds through external Python scripts. If there are any issues with specific lines of code, as the AdventuresInMinecraft book is farily outdated, I'm sure these things can either be worked out, or if neccesary we can utilize the backup starter kit build for Minecraft 1.12. You would just have to install Minecraft 1.12 and start a new server by executing the StartServer batch file in the "AdventuresInMinecraft" folder installed earlier. Similarly, you'd run the game and connect to your server and run code in your IDE. You may be required to install an earlier version of Java.
+
+The repositories for the various libraies used and some tutorials can be found as this link
+https://adventuresinminecraft.github.io/
+
+
+MINEFLAYER --
+
+Next, we will discuss Mineflayer. Fortunately, Mineflayer uses high-speed API to create Minecraft bots that we can control externally with Javascript programs. This means that a lot the heavy lifting and computation is performed  by online servers that we will connect to. That is, this section will hopefully not be as intensive as the prior. We've already set up and initialized our server. There are just a few more things to install. 
+
+If you prefer to write in Python, there is a bridge plugin for Python called JSPyBridge from which we can import certain functionalities built for javascript; JSPyBridge can be installed using pip. Simply install "javascript" using pip. It is also neccessary to have Python3.8 or higher and install the most recent version of Node.js from https://nodejs.org/en
+
+Once Node is installed, and the Javascript (JSPyBridge) package is installed. We can import various javascript methods from the javascript plugin. In the context of mineflayer, the 'require', 'On', 'off', 'Once', and 'AsyncTask' methods will be particularly usefu; they allow us to import Javascript libraries and set up event handlers for the minecraft client; the AsyncTask handler allows us to create multiple threads for a single agent. 
+
+I'd reccomend looking through the uploaded examples to see the functionality of the require handler and rthe other event handler; these examples will also show some of the constructors and methods for things in the mienflayer library. To utilize other mineflayer plugins, such as the Pathfinder and Prismarine-Viewer, we can use the require keyword.
+Note that each plugin has different requirements for setup and utilization; details can be found in the mineflayer repository and the repositories of mineflayer plugins. The first time your program is run using the require keyword, your terminal will begin to install the neccessary plugin/library. When installing javascript packages, you will be using npm instead of pip.
